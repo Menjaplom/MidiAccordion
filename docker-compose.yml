@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+
+    fluidsynth:
+        build: .
+        privileged: true
+        container_name: fluidsynth
+        restart: unless-stopped
+        ports:
+            - 7000:7000
+        expose:
+            - 7000
+        networks:
+              - internal
+        volumes:
+            - ./Fluidsynth-Webapp:/fluidsynthwebapp
+        devices: 
+            - '/dev:/dev'
+
+networks:
+    internal:
