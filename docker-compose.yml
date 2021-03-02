@@ -14,7 +14,7 @@ services:
         networks:
               - internal
         volumes:
-            - ./Fluidsynth-Webapp:/fluidsynthwebapp
+            - ./Fluidsynth-Webapp/config.js:/fluidsynthwebapp/config.js
         devices: 
             - '/dev:/dev'
 
