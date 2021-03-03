@@ -9,72 +9,77 @@ socket.on('connect', getInstruments);
 
 window.onhashchange = getInstruments;
 
-socket.on('reconnecting', function() {
-    $.mobile.loading( 'show', { text: 'finding fluid', textVisible: true });
+socket.on('reconnecting', function () {
+	$.mobile.loading('show', { text: 'finding fluid', textVisible: true });
 })
 
-function getChannels(){
+function getChannels() {
 	socket.emit('getinstruments');
-	socket.on('current', function(data){
+	socket.on('current', function (data) {
 		instruments = data.channels;
 		console.log(instruments);
 	});
 }
 
-function getInstruments(){
+function getInstruments() {
 	var params = self.location.hash.slice(1).split('&');
-	
-	for (var i=0; i < params.length; i++) {
+
+	for (var i = 0; i < params.length; i++) {
 		if (params[i][0] == "c" && params[i][1] == "=" && params[i].length > 2)
 			channel = params[i].split("=")[1];
 		if (params[i][0] == "f" && params[i][1] == "=" && params[i].length > 2)
 			listFont = params[i].split("=")[1];
 	}
 
-	$.mobile.loading( 'show', { text: 'pouring fluid', textVisible: true });
+	$.mobile.loading('show', { text: 'pouring fluid', textVisible: true });
 	socket.emit('status', 'client connected');
 
 	var fontId = listFont;
 
 	socket.emit('queryFont', fontId);
 
-	socket.on('instrumentdump', function(idmp){
+	socket.on('instrumentdump', function (idmp) {
 
 		$('#instruments').html("");
 		var str = idmp.package;
 		var array = ["coso1", "coso2", "coso3"];
 		var instruments = str.split("\n");
-		for (i=0;i < instruments.length - 1; i++) {
+		for (i = 0; i < instruments.length - 1; i++) {
 			console.log(instruments[i].slice(4));
-			var instrumentBank = instruments[i].slice(0,3);
-			var instrumentnumber = instruments[i].slice(4,7);
+			var instrumentBank = instruments[i].slice(0, 3);
+			var instrumentnumber = instruments[i].slice(4, 7);
 			var instrumentname = instruments[i].slice(8);
 			$('#instruments').append(
-				'<li data-icon="audio"><a href="#" data-inum="' 
-				+ instrumentnumber 
+				'<li data-icon="audio"><a href="#" data-inum="'
+				+ instrumentnumber
 				+ '" data-font-id="'
 				+ fontId
 				+ '" data-inst-bank="'
 				+ instrumentBank
-				+ '">' 
-				+ instrumentname 
+				+ '">'
+				+ instrumentname
 				+ '</a></li>').enhanceWithin();
 		}
-		$("#instruments").listview("refresh");
-		$.mobile.loading( 'hide');
+		try {
+			$('#instruments').listview('refresh');
+		} catch (e) {
+			$('#instruments').listview();
+		}
+		$.mobile.loading('hide');
 	});
 }
-$(document).on('vclick', '#instruments li a', function(){
+$(document).on('vclick', '#instruments li a', function () {
 	var ipath = $(this).attr('data-inum');
 	var fontId = $(this).attr('data-font-id');
 	var instBank = $(this).attr('data-inst-bank');
 	var iname = $(this).text();
-	
-	socket.emit('changeinst', 
-		{ channel: channel, 
-		  instrumentId: ipath, 
-		  fontId: fontId, 
-		  bankId: instBank 
+
+	socket.emit('changeinst',
+		{
+			channel: channel,
+			instrumentId: ipath,
+			fontId: fontId,
+			bankId: instBank
 		});
 
 	console.log(channel);

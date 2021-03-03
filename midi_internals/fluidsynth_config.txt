@@ -1,5 +1,5 @@
 echo "Exploding minds"
 gain 3
-load "./soundfonts/lucid.sf2"
+load "./soundfonts/Accordion.sf2"
 select 0 1 0 0
 echo "bring it on"
