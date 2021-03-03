@@ -13,8 +13,8 @@ services:
             - 7000
         networks:
               - internal
-        volumes:
-            - ./Fluidsynth-Webapp/config.js:/fluidsynthwebapp/config.js
+        #volumes:
+        #    - ./Fluidsynth-Webapp/config.js:/fluidsynthwebapp/config.js
         devices: 
             - '/dev:/dev'
 
